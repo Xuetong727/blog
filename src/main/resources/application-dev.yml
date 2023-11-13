@@ -22,4 +22,7 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-#mybatis-plus.global-config.db-config.table-prefix=ms_
+mybatis-plus:
+  global-config:
+    db-config:
+      table-prefix: ms_
