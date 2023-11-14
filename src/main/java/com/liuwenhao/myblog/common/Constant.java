@@ -1,7 +1,8 @@
 package com.liuwenhao.myblog.common;
 
-public class Constant {
+public interface Constant {
 
-    public static final Integer SUCCESS = 200;
+    /*通用返回*/
+     Integer SUCCESS = 200;
 
 }

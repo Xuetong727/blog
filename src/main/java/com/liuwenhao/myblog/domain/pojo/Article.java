@@ -1,15 +1,15 @@
-package com.liuwenhao.myblog.domain;
+package com.liuwenhao.myblog.domain.pojo;
 
 import lombok.Data;
 
 @Data
 public class Article {
 
-    private Integer id;
+    private Long id;
 
     private Integer commentCounts;
 
-    private Integer createDate;
+    private Long createDate;
 
     private String summary;
 
@@ -19,9 +19,9 @@ public class Article {
 
     private Integer weight;
 
-    private Integer AuthorId;
+    private Long AuthorId;
 
-    private Integer bodyId;
+    private Long bodyId;
 
-    private Integer categoryId;
+    private Long categoryId;
 }
