@@ -26,7 +26,7 @@ public class ArticleController {
     @ApiOperation("文章列表接口")
     @PostMapping()
     public Result list(@RequestBody PageParams pageParams){
-        List<ArticleVo> list = service.listAll(pageParams);
-        return Result.success(list);
+        Result result= service.listAll(pageParams);
+        return result;
     }
 }

@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Result {
 
-    private Boolean success;
-    private Integer code;
+    private boolean success;
+    private int code;
     private String msg;
     private Object data;
 
