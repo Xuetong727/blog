@@ -9,16 +9,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.liuwenhao.myblog.domain.Result;
 import com.liuwenhao.myblog.domain.page.PageParams;
 import com.liuwenhao.myblog.domain.pojo.*;
-import com.liuwenhao.myblog.domain.vo.ArticleBodyVo;
-import com.liuwenhao.myblog.domain.vo.ArticleVo;
-import com.liuwenhao.myblog.domain.vo.CategoryVo;
-import com.liuwenhao.myblog.domain.vo.TagVo;
+import com.liuwenhao.myblog.domain.vo.*;
 import com.liuwenhao.myblog.mapper.ArticleMapper;
 import com.liuwenhao.myblog.mapper.ArticleTagMapper;
-import com.liuwenhao.myblog.service.ArticleBodyService;
-import com.liuwenhao.myblog.service.ArticleService;
-import com.liuwenhao.myblog.service.CategoryService;
-import com.liuwenhao.myblog.service.TagService;
+import com.liuwenhao.myblog.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +36,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public Result listAll(PageParams pageParams) {
@@ -71,6 +68,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         for (Article record : records) {
             ArticleVo articleVo = new ArticleVo();
             BeanUtils.copyProperties(record,articleVo);
+            SysUser author = userService.getById(record.getAuthorId());
+            if(author != null){
+                // UserVo userVo = new UserVo();
+                // BeanUtils.copyProperties(author,userVo);
+                articleVo.setAuthor(author.getNickname());
+            }
             if(withBody){
                 ArticleBodyVo articleBodyVo = new ArticleBodyVo();
                 ArticleBody articleBody = articleBodyService.getById(record.getBodyId());
