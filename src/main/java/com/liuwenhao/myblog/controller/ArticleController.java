@@ -3,6 +3,7 @@ package com.liuwenhao.myblog.controller;
 import com.liuwenhao.myblog.domain.page.PageParams;
 import com.liuwenhao.myblog.domain.pojo.Article;
 import com.liuwenhao.myblog.domain.Result;
+import com.liuwenhao.myblog.domain.vo.Archives;
 import com.liuwenhao.myblog.domain.vo.ArticleVo;
 import com.liuwenhao.myblog.domain.vo.TagVo;
 import com.liuwenhao.myblog.service.ArticleService;
@@ -35,12 +36,29 @@ public class ArticleController {
 
 
     @PostMapping("/hot")
-    @ApiOperation("最热标签")
+    @ApiOperation("最热文章")
     public Result hot(){
-        int limit = 2 ;
-        List<TagVo> tagVos = tagService.getHotTags(limit);
+        int limit = 5 ;
+        List<ArticleVo> articleVos = service.getHotAtricles(limit);
+        return Result.success(articleVos);
+    }
 
-        return Result.success(tagVos);
+
+    @PostMapping("/new")
+    @ApiOperation("最新文章")
+    public Result lastedArticle(){
+        int limit = 5 ;
+        List<ArticleVo> lastedArticles = service.getLastedArticle(limit);
+        return Result.success(lastedArticles);
+    }
+
+
+    @PostMapping("/listArchives")
+    @ApiOperation("文章归档")
+    public Result listArchives(){
+
+        List<Archives> archives = service.getArchives();
+        return Result.success(archives);
     }
 
 }

@@ -15,8 +15,13 @@ import com.liuwenhao.myblog.mapper.ArticleTagMapper;
 import com.liuwenhao.myblog.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +44,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ArticleMapper articleMapper;
 
     @Override
     public Result listAll(PageParams pageParams) {
@@ -63,12 +71,39 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // return Result.success(articleVoPage);
     }
 
+    @Override
+    public List<ArticleVo> getHotAtricles(int limit) {
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<Article>().orderByDesc(Article::getViewCounts).last("limit " + limit);
+        List<Article> list = list(queryWrapper);
+        ArrayList<ArticleVo> articleVos = copyList(list, false, false, false);
+        return articleVos;
+    }
+
+    @Override
+    public List<ArticleVo> getLastedArticle(int limit) {
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<Article>().orderByDesc(Article::getCreateDate).last("limit " + limit);
+        List<Article> articles = list(queryWrapper);
+        ArrayList<ArticleVo> articleVos = copyList(articles,false,false,false);
+        return articleVos;
+    }
+
+    @Override
+    public List<Archives> getArchives() {
+        List<Archives> archivesList = articleMapper.getArchives();
+        return archivesList;
+    }
+
     private ArrayList<ArticleVo> copyList(List<Article> records,Boolean withBody,Boolean withTag,Boolean withCategory) {
         ArrayList<ArticleVo> articleVos = new ArrayList<>();
         for (Article record : records) {
             ArticleVo articleVo = new ArticleVo();
             BeanUtils.copyProperties(record,articleVo);
             SysUser author = userService.getById(record.getAuthorId());
+            //转换时间
+            Long createDate = record.getCreateDate();
+            Instant instant = Instant.ofEpochMilli(createDate);
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+            articleVo.setCreateDate(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")));
             if(author != null){
                 // UserVo userVo = new UserVo();
                 // BeanUtils.copyProperties(author,userVo);

@@ -9,17 +9,17 @@ public class SysUser {
 
     private String account;
 
-    private Boolean admin;
+    private int admin;
 
     private String avatar;
 
     private Long createDate;
 
-    private Boolean deleted;
+    private int deleted;
 
     private String email;
 
-    private Long last_login;
+    private Long lastLogin;
 
     private String mobilePhoneNumber;
 
