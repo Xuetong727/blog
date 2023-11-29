@@ -11,6 +11,7 @@ import com.liuwenhao.myblog.domain.vo.UserVo;
 import com.liuwenhao.myblog.mapper.UserMapper;
 import com.liuwenhao.myblog.service.UserService;
 import com.liuwenhao.myblog.utils.JWTUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -43,6 +44,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
             return Result.fail(ErrorCode.NOT_LOGIN.getCode(), ErrorCode.NOT_LOGIN.getMsg());
         }
         String userJson = (String) redisTemplate.opsForValue().get("TOKEN_" + token);
+        if(StringUtils.isBlank(userJson)){
+            return Result.fail(ErrorCode.NOT_LOGIN.getCode(), ErrorCode.NOT_LOGIN.getMsg());
+        }
         SysUser sysUser = JSON.parseObject(userJson, SysUser.class);
         // UserVo userVo = new UserVo();
         LoginUserVo loginUserVo = new LoginUserVo();

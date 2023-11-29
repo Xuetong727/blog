@@ -43,7 +43,7 @@ public class RegisterServiceImpl implements RegisterService {
         LambdaQueryWrapper<SysUser> sysUserLambdaQueryWrapper = new LambdaQueryWrapper<>();
         sysUserLambdaQueryWrapper.eq(SysUser::getAccount,account);
         sysUserLambdaQueryWrapper.eq(SysUser::getPassword,DigestUtils.md5Hex(param.getPassword()));
-
+        sysUserLambdaQueryWrapper.last("limit 1");
         SysUser one = userService.getOne(sysUserLambdaQueryWrapper);
         if(one != null){
             return Result.fail(ErrorCode.ACCOUNT_EXIST.getCode(), ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());

@@ -31,7 +31,7 @@ public class UserController {
 
     @ApiOperation(value = "当前用户接口")
     @GetMapping("/currentUser")
-    public Result login(@RequestHeader("Authorization") String token){
+    public Result currentUser(@RequestHeader("Authorization") String token){
 
         Result result = userService.getUserInfoByToken(token);
         return result;
