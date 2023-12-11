@@ -3,6 +3,7 @@ package com.liuwenhao.myblog.handler;
 
 import com.liuwenhao.myblog.common.ErrorCode;
 import com.liuwenhao.myblog.domain.Result;
+import com.liuwenhao.myblog.service.UserService;
 import com.liuwenhao.myblog.utils.JWTUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,19 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+
+    // @Autowired
+    // private UserService userService;
+    //
+    // @Override
+    // public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    //     boolean successLogin = userService.checkLogin(request);
+    //     if(!successLogin){
+    //         request.setAttribute();
+    //     }
+    //     return
+    // }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

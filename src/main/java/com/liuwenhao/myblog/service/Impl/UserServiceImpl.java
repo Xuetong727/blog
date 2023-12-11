@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Service
@@ -39,10 +40,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
 
     @Override
     public Result getUserInfoByToken(String token) {
+        //检查token
         Map<String, Object> map = JWTUtils.checkToken(token);
         if(map == null){
             return Result.fail(ErrorCode.NOT_LOGIN.getCode(), ErrorCode.NOT_LOGIN.getMsg());
         }
+        //获取用户信息 -
         String userJson = (String) redisTemplate.opsForValue().get("TOKEN_" + token);
         if(StringUtils.isBlank(userJson)){
             return Result.fail(ErrorCode.NOT_LOGIN.getCode(), ErrorCode.NOT_LOGIN.getMsg());
@@ -52,5 +55,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
         LoginUserVo loginUserVo = new LoginUserVo();
         BeanUtils.copyProperties(sysUser,loginUserVo);
         return Result.success(loginUserVo);
+    }
+
+    @Override
+    public boolean checkLogin(HttpServletRequest request) {
+        String bearToken = request.getHeader("Authorization");
+        if(bearToken == null){
+            return false;
+        }
+        return false;
     }
 }
