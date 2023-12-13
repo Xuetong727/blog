@@ -1,8 +1,10 @@
 package com.liuwenhao.myblog.handler;
 
 
+import com.alibaba.fastjson.JSON;
 import com.liuwenhao.myblog.common.ErrorCode;
 import com.liuwenhao.myblog.domain.Result;
+import com.liuwenhao.myblog.domain.pojo.SysUser;
 import com.liuwenhao.myblog.service.UserService;
 import com.liuwenhao.myblog.utils.JWTUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +22,7 @@ import java.util.Map;
 public class LoginInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private UserService userService;
 
 
     // @Autowired
@@ -53,16 +55,18 @@ public class LoginInterceptor implements HandlerInterceptor {
             //这样子只会让浏览器地址变成这个.同时没有附上参数,method也没有设置,并不能达到实现转跳登录的效果
             // response.sendRedirect(request.getContextPath()+"/login");
             // return false;
-            request.getRequestDispatcher("/login");
-        }
-        Map<String, Object> map = JWTUtils.checkToken(token);
-        if(map == null){
-            response.sendRedirect(request.getContextPath()+"/login");
+            // request.getRequestDispatcher("/login");
+            Result fail = Result.fail(ErrorCode.NOT_LOGIN.getCode(), ErrorCode.NOT_LOGIN.getMsg());
+            response.setHeader("Content-Type","application/json;charset=utf-8");
+            response.getWriter().print(JSON.toJSON(fail));
             return false;
         }
-        String userJson = (String) redisTemplate.opsForValue().get("TOKEN_" + token);
-        if(StringUtils.isBlank(userJson)){
-            response.sendRedirect(request.getContextPath()+"/login");
+
+        SysUser sysUser = userService.checkLogin(token);
+        if(sysUser == null){
+            Result fail = Result.fail(ErrorCode.NOT_LOGIN.getCode(), ErrorCode.NOT_LOGIN.getMsg());
+            response.setHeader("Content-Type","application/json;charset=utf-8");
+            response.getWriter().print(JSON.toJSON(fail));
             return false;
         }
         return true;

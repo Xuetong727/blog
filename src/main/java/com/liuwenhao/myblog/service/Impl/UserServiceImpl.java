@@ -40,29 +40,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, SysUser> implements
 
     @Override
     public Result getUserInfoByToken(String token) {
-        //检查token
-        Map<String, Object> map = JWTUtils.checkToken(token);
-        if(map == null){
-            return Result.fail(ErrorCode.NOT_LOGIN.getCode(), ErrorCode.NOT_LOGIN.getMsg());
+        SysUser sysUser = checkLogin(token);
+        if (sysUser == null){
+            return Result.fail(ErrorCode.PARAMS_ERROR.getCode(), ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
         }
-        //获取用户信息 -
-        String userJson = (String) redisTemplate.opsForValue().get("TOKEN_" + token);
-        if(StringUtils.isBlank(userJson)){
-            return Result.fail(ErrorCode.NOT_LOGIN.getCode(), ErrorCode.NOT_LOGIN.getMsg());
-        }
-        SysUser sysUser = JSON.parseObject(userJson, SysUser.class);
-        // UserVo userVo = new UserVo();
         LoginUserVo loginUserVo = new LoginUserVo();
         BeanUtils.copyProperties(sysUser,loginUserVo);
         return Result.success(loginUserVo);
     }
 
     @Override
-    public boolean checkLogin(HttpServletRequest request) {
-        String bearToken = request.getHeader("Authorization");
-        if(bearToken == null){
-            return false;
+    public SysUser checkLogin(String token) {
+
+        Map<String, Object> map = JWTUtils.checkToken(token);
+        if(map == null){
+            return null;
         }
-        return false;
+        //获取用户信息 -
+        String userJson = (String) redisTemplate.opsForValue().get("TOKEN_" + token);
+        if(StringUtils.isBlank(userJson)){
+            return null;
+        }
+        return JSON.parseObject(userJson, SysUser.class);
     }
 }

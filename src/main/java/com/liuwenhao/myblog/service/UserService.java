@@ -12,5 +12,5 @@ public interface UserService extends IService<SysUser> {
 
     Result getUserInfoByToken(String token);
 
-    boolean checkLogin(HttpServletRequest request);
+    SysUser checkLogin(String token);
 }
