@@ -22,6 +22,7 @@ public class LoginController {
 
     @PostMapping
     public Result login(@RequestBody LoginParam param){
+        System.out.println("1111111");
         Result result = loginService.login(param);
         return result;
     }
