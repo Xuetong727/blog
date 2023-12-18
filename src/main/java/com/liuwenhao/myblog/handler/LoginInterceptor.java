@@ -21,6 +21,8 @@ import java.util.Map;
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
 
+    public static ThreadLocal<String> userThreadLocal = new ThreadLocal<>();
+
     @Autowired
     private UserService userService;
 
@@ -43,7 +45,9 @@ public class LoginInterceptor implements HandlerInterceptor {
         if(!(handler instanceof HandlerMethod)){
             return true;
         }
-
+        userThreadLocal.set(Thread.currentThread().getName());
+        System.out.println(userThreadLocal.get());
+        System.out.println(userThreadLocal);
         String token = request.getHeader("Authorization");
         // String[] tokenS = authorization.split("TOKEN_");//这是在redis里的,请求头里每有前缀
         // if(tokenS.length == 0){
@@ -69,6 +73,8 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.getWriter().print(JSON.toJSON(fail));
             return false;
         }
+
+
         return true;
     }
 }
